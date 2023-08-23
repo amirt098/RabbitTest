@@ -1,0 +1,26 @@
+version: '3'
+services:
+  rabbitmq:
+    image: artifactory.runc.info/docker/rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=myuser
+      - RABBITMQ_DEFAULT_PASS=mypassword
+
+  logger:
+    container_name:   logger
+    build:
+      context: .
+      dockerfile: Dockerfile-logger
+    depends_on:
+      - rabbitmq
+
+  log-generator:
+    container_name: generator
+    build:
+      context: .
+      dockerfile: Dockerfile-log-generator
+    depends_on:
+      - rabbitmq
